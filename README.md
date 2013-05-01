@@ -31,9 +31,9 @@ panoLoader.load(new google.maps.LatLng(42.345601, -71.098348));
 ## Requirements
 
 * jQuery
-* [jquery-base64][https://github.com/carlo/jquery-base64]
-* [zpipe][https://github.com/richardassar/zpipe]
-* [GSVPano.js][https://github.com/spite/GSVPano.js] (slightly modified to include panorama ID in results)
+* [jquery-base64](https://github.com/carlo/jquery-base64)
+* [zpipe](https://github.com/richardassar/zpipe)
+* [GSVPano.js](https://github.com/spite/GSVPano.js) (slightly modified to include panorama ID in results)
 
 ## License
 
