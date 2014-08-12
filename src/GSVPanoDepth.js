@@ -115,25 +115,35 @@ GSVPANO.PanoDepthLoader = function (parameters) {
 
         depthMap = new Float32Array(w*h);
 
+        var sin_theta = new Float32Array(h);
+        var cos_theta = new Float32Array(h);
+        var sin_phi   = new Float32Array(w);
+        var cos_phi   = new Float32Array(w);
+
+        for(y=0; y<h; ++y) {
+            theta = (h - y - 0.5) / h * Math.PI;
+            sin_theta[y] = Math.sin(theta);
+            cos_theta[y] = Math.cos(theta);
+        }
+        for(x=0; x<w; ++x) {
+            phi = (w - x - 0.5) / w * 2 * Math.PI + Math.PI/2;
+            sin_phi[x] = Math.sin(phi);
+            cos_phi[x] = Math.cos(phi);
+        }
+
         for(y=0; y<h; ++y) {
             for(x=0; x<w; ++x) {
                 planeIdx = indices[y*w + x];
 
-                phi = (w - x - 1) / (w - 1) * 2 * Math.PI + Math.PI/2;
-                theta = (h - y - 1) / (h - 1) * Math.PI;
-
-                v[0] = Math.sin(theta) * Math.cos(phi);
-                v[1] = Math.sin(theta) * Math.sin(phi);
-                v[2] = Math.cos(theta);
+                v[0] = sin_theta[y] * cos_phi[x];
+                v[1] = sin_theta[y] * sin_phi[x];
+                v[2] = cos_theta[y];
 
                 if(planeIdx > 0) {
                     plane = planes[planeIdx];
 
-                    t = plane.d / (v[0]*plane.n[0] + v[1]*plane.n[1] + v[2]*plane.n[2]);
-                    v[0] *= t;
-                    v[1] *= t;
-                    v[2] *= t;
-                    depthMap[y*w + (w-x-1)] = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+                    t = Math.abs( plane.d / (v[0]*plane.n[0] + v[1]*plane.n[1] + v[2]*plane.n[2]) );
+                    depthMap[y*w + (w-x-1)] = t;
                 } else {
                     depthMap[y*w + (w-x-1)] = 9999999999999999999.;
                 }
